@@ -2,34 +2,21 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { AppProvider } from './shared/context/AppContext';
+import { CurrentTime } from './features/currentTime';
+// import { TimezoneSearch } from './features/timezoneSearch';
+// import { TimezoneCards } from './features/timezoneDisplay';
+// import { TimeSlider } from './features/timeSlider';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <AppProvider>
+      <div className="min-h-screen bg-gray-100 p-8">
+        <CurrentTime />
+        {/* Other components will go here */}
       </div>
-      <h1>Vite + React, Deployed via Vercel</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="text-[100px]">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </AppProvider>
+  );
+};
 
-export default App
+export default App;

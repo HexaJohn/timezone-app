@@ -9,6 +9,7 @@ type TimeState = {
 
 // Define the possible actions that can be dispatched to update the state
 type Action =
+    | { type: 'SET_BASE_TIMEZONE'; payload: string }
     | { type: 'SET_CURRENT_TIME'; payload: Date }
     | { type: 'SET_OFFSET'; payload: number }
     | { type: 'ADD_TIMEZONE'; payload: string }
