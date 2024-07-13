@@ -18,23 +18,22 @@ export const TimezoneSearch: React.FC<TimezoneSearchProps> = () => {
     };
 
     return (
-        <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-2">Search Cities</h2>
+        <div className="text-red-400">
             <input
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
                 placeholder="Search for a city..."
-                className="w-full p-2 border rounded mb-4"
+                className="w-full p-2 mb-4 bg-gray-800 border border-gray-700 rounded text-red-400 placeholder-gray-500"
             />
             <div className="max-h-60 overflow-y-auto">
                 {searchResults.size > 0 ? (
                     <table className="w-full">
                         <thead>
-                            <tr>
-                                <th className="text-left">City</th>
-                                <th className="text-left">Country</th>
-                                <th className="text-left">Timezone</th>
+                            <tr className="text-gray-500">
+                                <th className="text-left pb-2">City</th>
+                                <th className="text-left pb-2">Country</th>
+                                <th className="text-left pb-2">Timezone</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,17 +41,17 @@ export const TimezoneSearch: React.FC<TimezoneSearchProps> = () => {
                                 <tr
                                     key={cityInfo.id}
                                     onClick={() => handleTimezoneSelect(cityInfo)}
-                                    className="cursor-pointer hover:bg-gray-100"
+                                    className="cursor-pointer hover:bg-gray-800"
                                 >
                                     <td className="py-2">{cityInfo.city}</td>
-                                    <td className="py-2">{cityInfo.country}</td>
-                                    <td className="py-2">{cityInfo.timezone}</td>
+                                    <td className="py-2 text-yellow-400">{cityInfo.country}</td>
+                                    <td className="py-2 text-green-400">{cityInfo.timezone}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p>No cities found. Try a different search term.</p>
+                    <p className="text-gray-500">No cities found. Try a different search term.</p>
                 )}
             </div>
         </div>

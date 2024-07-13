@@ -35,8 +35,7 @@ export const CurrentTime: React.FC<CurrentTimeProps> = () => {
     const { currentTime, adjustedTime, timezone, setTimezone, supportedTimezones, currentOffset } = useCurrentTime();
 
     return (
-        <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-2">Current Time</h2>
+        <div className="text-green-400">
             <div className="mb-4">
                 <p className="text-sm text-gray-500">Actual Time:</p>
                 <p className="text-2xl font-bold">
@@ -45,16 +44,16 @@ export const CurrentTime: React.FC<CurrentTimeProps> = () => {
             </div>
             <div className="mb-4">
                 <p className="text-sm text-gray-500">Adjusted Time:</p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-red-400">
                     {formatDateTime(adjustedTime, timezone)}
                 </p>
             </div>
-            <p className="mt-2">Timezone: {timezone}</p>
-            <p className="mt-2">Offset: UTC {currentOffset >= 0 ? '+' : ''}{currentOffset / 60}</p>
+            <p className="mt-2">Timezone: <span className="text-blue-400">{timezone}</span></p>
+            <p className="mt-2">Offset: <span className="text-yellow-400">UTC {currentOffset >= 0 ? '+' : ''}{currentOffset / 60}</span></p>
             <select
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                className="mt-2 p-2 border rounded w-full"
+                className="mt-2 p-2 border rounded w-full bg-black"
             >
                 {[...new Set(supportedTimezones)].map((tz) => (
                     <option key={tz.id} value={tz.timezone}>
@@ -65,3 +64,4 @@ export const CurrentTime: React.FC<CurrentTimeProps> = () => {
         </div>
     );
 };
+
