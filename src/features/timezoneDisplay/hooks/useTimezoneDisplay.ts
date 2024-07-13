@@ -4,7 +4,6 @@ import { useMemo, useCallback } from "react";
 import { useAppContext } from "../../../shared/context/AppContext";
 import { TimezoneDisplayHook } from "../types";
 import { getTimezoneOffset } from "../../../shared/utils/timezones";
-import { CityTimezone } from "../../timezoneSearch/types";
 
 export const useTimezoneDisplay = (): TimezoneDisplayHook => {
   const { state, dispatch } = useAppContext();
