@@ -28,7 +28,7 @@ export const useTimeSlider = (): TimeSliderHook => {
   );
 
   return {
-    currentOffset: state.offset,
+    currentOffset: state.timeOffset,
     setOffset,
   };
 };

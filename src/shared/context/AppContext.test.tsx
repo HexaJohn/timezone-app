@@ -15,7 +15,7 @@ const TestComponent = ({ testId }: { testId: string }) => {
             <span data-testid={`${testId}-time`}>{state.currentTime.toISOString()}</span>
 
             {/* Display the current offset from the state */}
-            <span data-testid={`${testId}-offset`}>{state.offset}</span>
+            <span data-testid={`${testId}-offset`}>{state.timeOffset}</span>
 
             {/* Display all timezones from the state */}
             <span data-testid={`${testId}-timezones`}>{state.timezones.join(', ')}</span>

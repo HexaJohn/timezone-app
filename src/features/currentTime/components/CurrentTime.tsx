@@ -37,6 +37,25 @@ const getSupportedTimezones = (): string[] => {
 };
 
 /**
+ * Formats a date object into a string with date and time.
+ * 
+ * @param {Date} date - The date to format
+ * @param {string} timezone - The timezone to use for formatting
+ * @returns {string} A formatted date and time string
+ */
+const formatDateTime = (date: Date, timezone: string): string => {
+    return date.toLocaleString('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    });
+};
+/**
  * CurrentTime component displays the current time and date,
  * and allows the user to select a different timezone.
  * 
@@ -45,7 +64,7 @@ const getSupportedTimezones = (): string[] => {
  */
 export const CurrentTime: React.FC<CurrentTimeProps> = () => {
     // Use the custom hook to get the current time, timezone, and timezone setter
-    const { currentTime, timezone, setTimezone } = useCurrentTime();
+    const { currentTime, adjustedTime, timezone, setTimezone } = useCurrentTime();
 
     // Get the list of supported timezones
     const supportedTimezones = getSupportedTimezones();
@@ -53,14 +72,18 @@ export const CurrentTime: React.FC<CurrentTimeProps> = () => {
     return (
         <div className="bg-white shadow rounded-lg p-4">
             <h2 className="text-xl font-semibold mb-2">Current Time</h2>
-            {/* Display the current time in the selected timezone */}
-            <p className="text-3xl font-bold mb-2">
-                {currentTime.toLocaleTimeString([], { timeZone: timezone })}
-            </p>
-            {/* Display the current date in the selected timezone */}
-            <p className="text-gray-600">
-                {currentTime.toLocaleDateString([], { timeZone: timezone })}
-            </p>
+            <div className="mb-4">
+                <p className="text-sm text-gray-500">Actual Time:</p>
+                <p className="text-2xl font-bold">
+                    {formatDateTime(currentTime, timezone)}
+                </p>
+            </div>
+            <div className="mb-4">
+                <p className="text-sm text-gray-500">Adjusted Time:</p>
+                <p className="text-2xl font-bold">
+                    {formatDateTime(adjustedTime, timezone)}
+                </p>
+            </div>
             {/* Display the current timezone */}
             <p className="mt-2">Timezone: {timezone}</p>
             {/* Dropdown to select a different timezone */}

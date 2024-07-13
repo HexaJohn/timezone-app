@@ -12,6 +12,8 @@ export interface CurrentTimeProps {}
 export interface CurrentTimeHook {
   /** The current time */
   currentTime: Date;
+  /** The time adjusted by the offset from the TimeSlider */
+  adjustedTime: Date;
   /** The currently selected timezone */
   timezone: string;
   /** Function to update the selected timezone */

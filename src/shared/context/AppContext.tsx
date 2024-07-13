@@ -3,7 +3,7 @@ import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 // Define the shape of our application's state
 type TimeState = {
     currentTime: Date;  // The current time, which can be offset
-    offset: number;     // The time offset in minutes
+    timeOffset: number;     // The time offset in minutes
     timezones: string[];  // List of saved timezones
 };
 
@@ -18,7 +18,7 @@ type Action =
 // Set up the initial state
 const initialState: TimeState = {
     currentTime: new Date(),
-    offset: 0,
+    timeOffset: 0,
     timezones: [],
 };
 
@@ -28,7 +28,7 @@ function timeReducer(state: TimeState, action: Action): TimeState {
         case 'SET_CURRENT_TIME':
             return { ...state, currentTime: action.payload };
         case 'SET_OFFSET':
-            return { ...state, offset: action.payload };
+            return { ...state, timeOffset: action.payload };
         case 'ADD_TIMEZONE':
             return { ...state, timezones: [...state.timezones, action.payload] };
         case 'REMOVE_TIMEZONE':
