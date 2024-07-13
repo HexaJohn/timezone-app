@@ -2,58 +2,59 @@
 
 import React from 'react';
 import { useTimezoneSearch } from '../hooks/useTimezoneSearch';
-import { TimezoneSearchProps, Timezone } from '../types';
+import { TimezoneSearchProps } from '../types';
+import { CityInfo } from '../../../shared/utils/timezones';
 
-/**
- * TimezoneSearch component allows users to search for and select timezones.
- * It displays a search input and a list of matching timezones.
- *
- * @param {TimezoneSearchProps} props - The props for the TimezoneSearch component (currently empty)
- * @returns {React.ReactElement} A React element displaying the timezone search functionality
- */
 export const TimezoneSearch: React.FC<TimezoneSearchProps> = () => {
     const { searchTerm, setSearchTerm, searchResults, selectTimezone } = useTimezoneSearch();
 
-    /**
-     * Handles changes to the search input.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} event - The change event from the input
-     */
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
 
-    /**
-     * Handles the selection of a timezone.
-     * 
-     * @param {Timezone} timezone - The selected timezone
-     */
-    const handleTimezoneSelect = (timezone: Timezone) => {
-        selectTimezone(timezone);
-        setSearchTerm(''); // Clear the search term after selection
+    const handleTimezoneSelect = (cityInfo: CityInfo) => {
+        selectTimezone(cityInfo);
+        setSearchTerm('');
     };
 
     return (
         <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-2">Search Timezones</h2>
+            <h2 className="text-xl font-semibold mb-2">Search Cities</h2>
             <input
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                placeholder="Search for a timezone..."
+                placeholder="Search for a city..."
                 className="w-full p-2 border rounded mb-4"
             />
-            <ul className="max-h-60 overflow-y-auto">
-                {searchResults.map((timezone) => (
-                    <li
-                        key={timezone.name}
-                        onClick={() => handleTimezoneSelect(timezone)}
-                        className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-                    >
-                        {timezone.name} (UTC {timezone.offset >= 0 ? '+' : ''}{timezone.offset / 60})
-                    </li>
-                ))}
-            </ul>
+            <div className="max-h-60 overflow-y-auto">
+                {searchResults.size > 0 ? (
+                    <table className="w-full">
+                        <thead>
+                            <tr>
+                                <th className="text-left">City</th>
+                                <th className="text-left">Country</th>
+                                <th className="text-left">Timezone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Array.from(searchResults).map((cityInfo) => (
+                                <tr
+                                    key={cityInfo.id}
+                                    onClick={() => handleTimezoneSelect(cityInfo)}
+                                    className="cursor-pointer hover:bg-gray-100"
+                                >
+                                    <td className="py-2">{cityInfo.city}</td>
+                                    <td className="py-2">{cityInfo.country}</td>
+                                    <td className="py-2">{cityInfo.timezone}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No cities found. Try a different search term.</p>
+                )}
+            </div>
         </div>
     );
 };

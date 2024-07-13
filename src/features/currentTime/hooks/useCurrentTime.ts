@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useAppContext } from "../../../shared/context/AppContext";
 import { CurrentTimeHook } from "../types";
 import {
-  getSupportedTimezones,
+  getCitiesAndTimezones,
   getTimezoneOffset,
 } from "../../../shared/utils/timezones";
 
@@ -21,7 +21,7 @@ export const useCurrentTime = (): CurrentTimeHook => {
   );
 
   // Get the list of supported timezones
-  const supportedTimezones = useMemo(() => getSupportedTimezones(), []);
+  const supportedTimezones = useMemo(() => getCitiesAndTimezones(), []);
 
   useEffect(() => {
     const timer = setInterval(() => {

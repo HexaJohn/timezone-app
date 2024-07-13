@@ -1,16 +1,16 @@
 // src/features/timezoneDisplay/types.ts
 
-import { Timezone } from "../timezoneSearch/types";
+import { CityTimezone } from "../timezoneSearch/types";
 
 export interface TimezoneDisplayHook {
-  timezones: Timezone[];
-  removeTimezone: (timezoneName: string) => void;
+  timezones: CityTimezone[];
+  removeTimezone: (cityId: number) => void;
   getTimezoneTime: (timezone: string) => Date;
 }
 
 export interface TimezoneCardProps {
-  timezone: Timezone;
-  onRemove: (timezoneName: string) => void;
+  cityTimezone: CityTimezone;
+  onRemove: (cityId: number) => void;
   getTime: (timezone: string) => Date;
 }
 

@@ -1,5 +1,7 @@
 // src/features/currentTime/types.ts
 
+import { CityInfo } from "../../shared/utils/timezones";
+
 /**
  * Props for the CurrentTime component.
  * Currently empty as the component doesn't accept any props.
@@ -19,7 +21,7 @@ export interface CurrentTimeHook {
   /** Function to update the selected timezone */
   setTimezone: (timezone: string) => void;
   /** List of supported timezones */
-  supportedTimezones: string[];
+  supportedTimezones: CityInfo[];
   /** Current offset of the selected timezone in minutes */
   currentOffset: number;
 }

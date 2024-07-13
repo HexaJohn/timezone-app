@@ -3,6 +3,8 @@
 import React from 'react';
 import { useCurrentTime } from '../hooks/useCurrentTime';
 import { CurrentTimeProps } from '../types';
+import { CityInfo } from '../../../shared/utils/timezones';
+import { CityTimezone } from '../../timezoneSearch/types';
 
 /**
  * Formats a date object into a string with date and time.
@@ -56,9 +58,9 @@ export const CurrentTime: React.FC<CurrentTimeProps> = () => {
                 onChange={(e) => setTimezone(e.target.value)}
                 className="mt-2 p-2 border rounded w-full"
             >
-                {supportedTimezones.map((tz) => (
-                    <option key={tz} value={tz}>
-                        {tz}
+                {[...new Set(supportedTimezones)].map((tz) => (
+                    <option key={tz.id} value={tz.timezone}>
+                        {`${tz.city} | ${tz.timezone}`}
                     </option>
                 ))}
             </select>

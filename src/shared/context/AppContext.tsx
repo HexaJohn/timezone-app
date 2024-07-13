@@ -1,21 +1,21 @@
 // src/shared/context/AppContext.tsx
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { Timezone } from '../../features/timezoneSearch/types';
+import { CityTimezone } from '../../features/timezoneSearch/types';
 
 type TimeState = {
     currentTime: Date;
     baseTimezone: string;
     timeOffset: number;
-    selectedTimezones: Timezone[];
+    selectedTimezones: CityTimezone[];
 };
 
 type Action =
     | { type: 'SET_CURRENT_TIME'; payload: Date }
     | { type: 'SET_BASE_TIMEZONE'; payload: string }
     | { type: 'SET_TIME_OFFSET'; payload: number }
-    | { type: 'ADD_TIMEZONE'; payload: Timezone }
-    | { type: 'REMOVE_TIMEZONE'; payload: string };
+    | { type: 'ADD_TIMEZONE'; payload: CityTimezone }
+    | { type: 'REMOVE_TIMEZONE'; payload: number };  // Changed from string to number
 
 const initialState: TimeState = {
     currentTime: new Date(),
@@ -35,7 +35,10 @@ function timeReducer(state: TimeState, action: Action): TimeState {
         case 'ADD_TIMEZONE':
             return { ...state, selectedTimezones: [...state.selectedTimezones, action.payload] };
         case 'REMOVE_TIMEZONE':
-            return { ...state, selectedTimezones: state.selectedTimezones.filter(tz => tz.name !== action.payload) };
+            return {
+                ...state,
+                selectedTimezones: state.selectedTimezones.filter(tz => tz.id !== action.payload)
+            };
         default:
             return state;
     }

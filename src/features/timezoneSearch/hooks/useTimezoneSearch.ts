@@ -2,51 +2,44 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useAppContext } from "../../../shared/context/AppContext";
-import { TimezoneSearchHook, Timezone } from "../types";
+import { TimezoneSearchHook, CityTimezone } from "../types";
 import {
-  getSupportedTimezones,
+  getCitiesAndTimezones,
   getTimezoneOffset,
+  CityInfo,
 } from "../../../shared/utils/timezones";
 
-/**
- * Custom hook to manage timezone search functionality.
- * This hook provides search capabilities and interfaces with the global app context.
- *
- * @returns {TimezoneSearchHook} An object containing search state and functions.
- */
 export const useTimezoneSearch = (): TimezoneSearchHook => {
   const [searchTerm, setSearchTerm] = useState("");
   const { dispatch, state } = useAppContext();
 
-  /**
-   * Memoized list of all timezones with their offsets.
-   */
-  const TIMEZONES: Timezone[] = useMemo(() => {
-    return getSupportedTimezones().map((tz) => ({
-      name: tz,
-      offset: getTimezoneOffset(tz),
-    }));
+  const citiesAndTimezones = useMemo(() => {
+    const cities = getCitiesAndTimezones();
+    return new Set(cities);
   }, []);
 
-  /**
-   * Filters timezones based on the current search term.
-   * This calculation is memoized to prevent unnecessary recalculations.
-   */
   const searchResults = useMemo(() => {
-    if (!searchTerm.trim()) return TIMEZONES;
-    return TIMEZONES.filter((tz) =>
-      tz.name.toLowerCase().includes(searchTerm.toLowerCase())
+    if (citiesAndTimezones.size === 0) return new Set<CityInfo>();
+    if (!searchTerm.trim()) return citiesAndTimezones;
+    const lowercasedTerm = searchTerm.toLowerCase();
+    return new Set(
+      Array.from(citiesAndTimezones).filter(
+        (ct) =>
+          ct.city?.toLowerCase().includes(lowercasedTerm) ||
+          ct.country?.toLowerCase().includes(lowercasedTerm) ||
+          ct.timezone?.toLowerCase().includes(lowercasedTerm)
+      )
     );
-  }, [TIMEZONES, searchTerm]);
+  }, [citiesAndTimezones, searchTerm]);
 
-  /**
-   * Handles the selection of a timezone.
-   * Dispatches an action to add the selected timezone to the global state.
-   */
   const selectTimezone = useCallback(
-    (timezone: Timezone) => {
-      if (!state.selectedTimezones.some((tz) => tz.name === timezone.name)) {
-        dispatch({ type: "ADD_TIMEZONE", payload: timezone });
+    (cityInfo: CityInfo) => {
+      const cityTimezone: CityTimezone = {
+        ...cityInfo,
+        offset: getTimezoneOffset(cityInfo.timezone),
+      };
+      if (!state.selectedTimezones.some((tz) => tz.id === cityTimezone.id)) {
+        dispatch({ type: "ADD_TIMEZONE", payload: cityTimezone });
       }
     },
     [dispatch, state.selectedTimezones]

@@ -7,8 +7,4 @@ export { TimezoneSearch } from "./components/TimezoneSearch";
 export { useTimezoneSearch } from "./hooks/useTimezoneSearch";
 
 // Export the types for use in other parts of the application
-export type {
-  TimezoneSearchProps,
-  TimezoneSearchHook,
-  Timezone,
-} from "./types";
+export type { TimezoneSearchProps, TimezoneSearchHook } from "./types";
