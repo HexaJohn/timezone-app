@@ -1,106 +1,126 @@
+// src/shared/context/AppContext.test.tsx
+
 import React from 'react'
-import { render, act } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { render, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { AppProvider, useAppContext } from './AppContext'
+import { Timezone } from '../../features/timezoneSearch/types'
 
-// This component is used to test the AppContext
-// It renders the current state and provides buttons to dispatch actions
-const TestComponent = ({ testId }: { testId: string }) => {
-    // Use our custom hook to access the context
+/**
+ * A test component that uses the AppContext and exposes its values for testing.
+ */
+const TestComponent: React.FC = () => {
     const { state, dispatch } = useAppContext()
-
     return (
         <div>
-            {/* Display the current time from the state */}
-            <span data-testid={`${testId}-time`}>{state.currentTime.toISOString()}</span>
-
-            {/* Display the current offset from the state */}
-            <span data-testid={`${testId}-offset`}>{state.timeOffset}</span>
-
-            {/* Display all timezones from the state */}
-            <span data-testid={`${testId}-timezones`}>{state.timezones.join(', ')}</span>
-
-            {/* Button to set the offset to 60 minutes */}
-            <button onClick={() => dispatch({ type: 'SET_OFFSET', payload: 60 })}>
+            <span data-testid="current-time">{state.currentTime.toISOString()}</span>
+            <span data-testid="base-timezone">{state.baseTimezone}</span>
+            <span data-testid="time-offset">{state.timeOffset}</span>
+            <ul data-testid="selected-timezones">
+                {state.selectedTimezones.map((tz) => (
+                    <li key={tz.name}>{tz.name}</li>
+                ))}
+            </ul>
+            <button onClick={() => dispatch({ type: 'SET_TIME_OFFSET', payload: 60 })}>
                 Set Offset
             </button>
-
-            {/* Button to add a timezone */}
-            <button onClick={() => dispatch({ type: 'ADD_TIMEZONE', payload: 'America/New_York' })}>
+            <button
+                onClick={() =>
+                    dispatch({
+                        type: 'ADD_TIMEZONE',
+                        payload: { name: 'Europe/London', offset: 60 },
+                    })
+                }
+            >
                 Add Timezone
             </button>
-
-            {/* Button to remove a timezone */}
-            <button onClick={() => dispatch({ type: 'REMOVE_TIMEZONE', payload: 'America/New_York' })}>
+            <button
+                onClick={() =>
+                    dispatch({ type: 'REMOVE_TIMEZONE', payload: 'Europe/London' })
+                }
+            >
                 Remove Timezone
             </button>
         </div>
     )
 }
 
-// Main test suite for AppContext
 describe('AppContext', () => {
-    // Test case: Check if the initial state is correctly provided by the context
+    beforeEach(() => {
+        vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
     it('provides the correct initial state', () => {
-        // Render the TestComponent wrapped in AppProvider
         const { getByTestId } = render(
             <AppProvider>
-                <TestComponent testId="test1" />
+                <TestComponent />
             </AppProvider>
         )
 
-        // Check if the initial offset is 0
-        expect(getByTestId('test1-offset')).toHaveTextContent('0')
-
-        // Check if the initial timezones list is empty
-        expect(getByTestId('test1-timezones')).toHaveTextContent('')
+        expect(getByTestId('time-offset').textContent).toBe('0')
+        expect(getByTestId('selected-timezones').children.length).toBe(0)
     })
 
-    // Test case: Verify that the state updates when an action is dispatched
-    it('updates state when dispatch is called', () => {
-        // Render the TestComponent wrapped in AppProvider
+    it('updates time offset when dispatch is called', () => {
         const { getByTestId, getByText } = render(
             <AppProvider>
-                <TestComponent testId="test2" />
+                <TestComponent />
             </AppProvider>
         )
 
-        // Use act to wrap the state update
-        // This ensures that all updates are processed before making assertions
-        act(() => {
-            // Click the button to set the offset
-            getByText('Set Offset').click()
-        })
+        fireEvent.click(getByText('Set Offset'))
 
-        // Check if the offset has been updated to 60
-        expect(getByTestId('test2-offset')).toHaveTextContent('60')
+        expect(getByTestId('time-offset').textContent).toBe('60')
     })
 
-    // Test case: Verify that timezones can be added and removed from the state
     it('adds and removes timezones', () => {
-        // Render the TestComponent wrapped in AppProvider
         const { getByTestId, getByText } = render(
             <AppProvider>
-                <TestComponent testId="test3" />
+                <TestComponent />
             </AppProvider>
         )
 
-        // Add a timezone
-        act(() => {
-            // Click the button to add a timezone
-            getByText('Add Timezone').click()
-        })
+        fireEvent.click(getByText('Add Timezone'))
 
-        // Check if the timezone was added correctly
-        expect(getByTestId('test3-timezones')).toHaveTextContent('America/New_York')
+        expect(getByTestId('selected-timezones').textContent).toContain('Europe/London')
 
-        // Remove the timezone
-        act(() => {
-            // Click the button to remove the timezone
-            getByText('Remove Timezone').click()
-        })
+        fireEvent.click(getByText('Remove Timezone'))
 
-        // Check if the timezone was removed correctly
-        expect(getByTestId('test3-timezones')).toHaveTextContent('')
+        expect(getByTestId('selected-timezones').children.length).toBe(0)
+    })
+
+    it('updates current time', () => {
+        const { getByTestId } = render(
+            <AppProvider>
+                <TestComponent />
+            </AppProvider>
+        )
+
+        const initialTime = getByTestId('current-time').textContent
+
+        vi.advanceTimersByTime(1000) // Advance time by 1 second
+
+        const newTime = getByTestId('current-time').textContent
+        expect(newTime).not.toBe(initialTime)
+    })
+
+    it('sets base timezone', async () => {
+        const { getByTestId } = render(
+            <AppProvider>
+                <TestComponent />
+            </AppProvider>
+        )
+
+        const initialTimezone = getByTestId('base-timezone').textContent
+
+        const { dispatch } = useAppContext()
+        dispatch({ type: 'SET_BASE_TIMEZONE', payload: 'America/New_York' })
+
+        expect(getByTestId('base-timezone').textContent).toBe('America/New_York')
+        expect(getByTestId('base-timezone').textContent).not.toBe(initialTimezone)
     })
 })

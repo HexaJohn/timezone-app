@@ -22,7 +22,7 @@ export const useTimeSlider = (): TimeSliderHook => {
    */
   const setOffset = useCallback(
     (offset: number) => {
-      dispatch({ type: "SET_OFFSET", payload: offset });
+      dispatch({ type: "SET_TIME_OFFSET", payload: offset });
     },
     [dispatch]
   );

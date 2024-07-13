@@ -10,7 +10,7 @@ export interface CurrentTimeProps {}
  * Interface for the useCurrentTime hook return value.
  */
 export interface CurrentTimeHook {
-  /** The current time */
+  /** The current actual time */
   currentTime: Date;
   /** The time adjusted by the offset from the TimeSlider */
   adjustedTime: Date;
@@ -18,4 +18,8 @@ export interface CurrentTimeHook {
   timezone: string;
   /** Function to update the selected timezone */
   setTimezone: (timezone: string) => void;
+  /** List of supported timezones */
+  supportedTimezones: string[];
+  /** Current offset of the selected timezone in minutes */
+  currentOffset: number;
 }
